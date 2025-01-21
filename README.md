@@ -17,6 +17,7 @@ This repository is part of a distributed Dagster setup that consists of two main
    - Separate deployment lifecycle
    - Independent versioning
    - Flexible scaling options
+   - [View Code Location Template Repository](https://github.com/ali2kan/sira-dagster-code-location)
 
 ### Why Distributed?
 
@@ -29,7 +30,7 @@ This repository is part of a distributed Dagster setup that consists of two main
 ### Using Together
 
 1. Deploy this core infrastructure first
-2. Deploy code locations using the companion repository
+2. Deploy code locations using the [companion repository](https://github.com/ali2kan/sira-dagster-code-location)
 3. Code locations will automatically register with this core instance
 
 Example distributed setup:
@@ -164,7 +165,7 @@ The repository includes comprehensive development configurations:
 
 ### Adding New Pipelines
 
-Update `workspace.yaml` to add new pipeline locations:
+Update `workspace.yaml` to add new pipeline locations. See our [Code Location Template](https://github.com/ali2kan/sira-dagster-code-location) for implementation examples:
 
 ```yaml
 load_from:
@@ -243,6 +244,7 @@ Regular maintenance tasks:
 - [Dagster Documentation](https://docs.dagster.io)
 - [Docker Documentation](https://docs.docker.com)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [Dagster Code Location Template](https://github.com/ali2kan/sira-dagster-code-location)
 
 ## 🤖 CI/CD and Automation
 

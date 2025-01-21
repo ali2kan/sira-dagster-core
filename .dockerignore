@@ -60,4 +60,33 @@ coverage.xml
 # Project specific
 data/
 tmp/
-temp/ 
+temp/
+
+# Code locations (since they should be mounted at runtime)
+code_location*/
+example_location/
+
+archive/
+.vscode/
+.github/
+
+# Docker and compose files (not needed in image)
+docker-compose*.yml
+docker-bake.hcl
+Dockerfile*
+
+tests/
+# Documentation and GitHub files
+*.md
+.github/
+CONTRIBUTING.md
+LICENSE
+
+# Development configs
+.editorconfig
+.flake8
+.yamllint
+tox.ini
+pytest.ini
+.cursorignore
+renovate.json

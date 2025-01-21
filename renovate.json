@@ -20,6 +20,10 @@
       "matchPackagePatterns": ["^dagster"],
       "groupName": "dagster packages",
       "labels": ["dagster-update"]
+    },
+    {
+      "matchPackageNames": ["python"],
+      "allowedVersions": "<=3.12"
     }
   ],
   "dockerfile": {

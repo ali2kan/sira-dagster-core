@@ -330,5 +330,3 @@ git push origin v1.0.0
 # 2. Tag them with v1.0.0
 # 3. Push to container registry
 ```
-
-Change

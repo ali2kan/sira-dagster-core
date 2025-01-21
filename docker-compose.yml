@@ -1,0 +1,89 @@
+services:
+  # postgresql_dagster:
+  #   image: postgres:17
+  #   container_name: postgresql_dagster
+  #   environment:
+  #     POSTGRES_USER: postgres_user
+  #     POSTGRES_PASSWORD: postgres_password
+  #     POSTGRES_DB: postgres_db
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   networks:
+  #     - dagster_network
+
+  webserver_dagster:
+    # image: ghcr.io/ali2kan/sira-dagster-core:multiarch
+    image: ${PIPELINE_IMAGE:-dagster-core}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    # platform: linux/arm64
+    restart: always
+    entrypoint:
+      - dagster-webserver
+      - -h
+      - 0.0.0.0
+      - -p
+      - "3000"
+      - -w
+      - /opt/dagster/app/workspace.yaml # Mount workspace.yaml here
+    container_name: webserver_dagster
+    ports:
+      - 3000:3000
+    environment:
+      DAGSTER_POSTGRES_USER: ${POSTGRES_USER:-postgres_user}
+      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_password}
+      DAGSTER_POSTGRES_DB: ${POSTGRES_DB:-postgres_db}
+      DAGSTER_POSTGRES_HOST: ${DAGSTER_POSTGRES_HOST:-localhost}
+      DAGSTER_CURRENT_IMAGE: ${DAGSTER_CURRENT_IMAGE:-ghcr.io/ali2kan/sira-dagster-core:multiarch}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./core/io_manager_storage:/tmp/io_manager_storage
+      - ./core/storage:/opt/dagster/dagster_home/storage
+      - ./core/dagster_home/dagster.yaml:/opt/dagster/dagster_home/dagster.yaml
+      - ./core/dagster_home/workspace.yaml:/opt/dagster/dagster_home/workspace.yaml
+      # - ./core/config:/opt/dagster/app/config
+    networks:
+      - dagster_network
+    # depends_on:
+    #   - postgresql_dagster
+
+  daemon_dagster:
+    # image: ghcr.io/ali2kan/sira-dagster-core:multiarch
+    image: ${PIPELINE_IMAGE:-dagster-core}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    # platform: linux/arm64
+    entrypoint:
+      - dagster-daemon
+      - run
+    container_name: daemon_dagster
+    restart: on-failure
+    environment:
+      DAGSTER_POSTGRES_USER: ${POSTGRES_USER:-postgres_user}
+      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_password}
+      DAGSTER_POSTGRES_DB: ${POSTGRES_DB:-postgres_db}
+      DAGSTER_POSTGRES_HOST: ${DAGSTER_POSTGRES_HOST:-localhost}
+      DAGSTER_CURRENT_IMAGE: ${DAGSTER_CURRENT_IMAGE:-ghcr.io/ali2kan/sira-dagster-core:multiarch}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./core/tmp/io_manager_storage:/tmp/io_manager_storage
+      - ./core/storage:/opt/dagster/dagster_home/storage
+      - ./core/dagster_home/dagster.yaml:/opt/dagster/dagster_home/dagster.yaml
+      - ./core/dagster_home/workspace.yaml:/opt/dagster/dagster_home/workspace.yaml
+      # - ./core/config:/opt/dagster/app/config
+    networks:
+      - dagster_network
+    # depends_on:
+    #   - postgresql_dagster
+
+# volumes:
+#   postgres_data: # Named volume for PostgreSQL data persistence
+
+networks:
+  dagster_network:
+    external: true
+    name: dagster_network

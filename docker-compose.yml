@@ -32,11 +32,11 @@ services:
     ports:
       - 3000:3000
     environment:
-      DAGSTER_POSTGRES_USER: ${POSTGRES_USER:-postgres_user}
-      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_password}
-      DAGSTER_POSTGRES_DB: ${POSTGRES_DB:-postgres_db}
-      DAGSTER_POSTGRES_HOST: ${DAGSTER_POSTGRES_HOST:-localhost}
-      DAGSTER_CURRENT_IMAGE: ${DAGSTER_CURRENT_IMAGE:-ghcr.io/ali2kan/sira-dagster-core:multiarch}
+      DAGSTER_POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DAGSTER_POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      DAGSTER_POSTGRES_HOST: ${POSTGRES_HOST:-10.10.10.199}
+      DAGSTER_CURRENT_IMAGE: ${DAGSTER_CURRENT_IMAGE:-ghcr.io/ali2kan/sira-dagster-core:latest}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./core/io_manager_storage:/tmp/io_manager_storage

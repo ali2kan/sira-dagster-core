@@ -3,6 +3,13 @@
 
 FROM python:3.12-slim@sha256:123be5684f39d8476e64f47a5fddf38f5e9d839baff5c023c815ae5bdfae0df7
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tzdata \
+    && ln -sf /usr/share/zoneinfo/UTC /etc/localtime \
+    && echo "UTC" > /etc/timezone \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 

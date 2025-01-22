@@ -7,12 +7,10 @@ on:
       - "Dockerfile"
       - "requirements.txt"
       - "tests/**"
+      - "core/dagster_home/**"
+      - "docker-compose.yml"
   pull_request:
     branches: [main]
-    paths:
-      - "Dockerfile"
-      - "requirements.txt"
-      - "tests/**"
 
 jobs:
   test:
@@ -28,9 +26,22 @@ jobs:
           docker run --rm dagster-core:latest \
             python -c "import dagster; print(f'Dagster version: {dagster.__version__}')"
 
-      - name: Run tests
+      - name: Install test dependencies and run tests
         run: |
           docker run --rm \
             -v $(pwd)/tests:/app/tests \
             dagster-core:latest \
-            pytest tests/
+            sh -c "pip install -r tests/requirements-test.txt && python -m pytest tests/"
+
+      - name: Test Dagster configuration
+        run: |
+          docker run --rm \
+            -v $(pwd)/core/dagster_home:/opt/dagster/dagster_home \
+            dagster-core:latest \
+            dagster config validate
+
+      - name: Create test network
+        run: docker network create dagster_network || true
+
+      - name: Test docker-compose configuration
+        run: docker-compose config

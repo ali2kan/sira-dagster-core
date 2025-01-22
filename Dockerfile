@@ -1,7 +1,8 @@
 # Dagster libraries to run both dagster-webserver and the dagster-daemon. Does not
 # need to have access to any pipeline code.
 
-FROM python:3.12-slim@sha256:123be5684f39d8476e64f47a5fddf38f5e9d839baff5c023c815ae5bdfae0df7
+# FROM python:3.12-slim@sha256:123be5684f39d8476e64f47a5fddf38f5e9d839baff5c023c815ae5bdfae0df7
+FROM python:3.12-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     tzdata \

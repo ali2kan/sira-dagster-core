@@ -27,7 +27,7 @@ services:
       - -p
       - "3000"
       - -w
-      - /opt/dagster/app/workspace.yaml # Mount workspace.yaml here
+      - /opt/dagster/dagster_home/workspace.yaml # Mount workspace.yaml here
     container_name: webserver_dagster
     ports:
       - 3000:3000
@@ -45,6 +45,8 @@ services:
       - ./core/storage:/opt/dagster/dagster_home/storage
       - ./core/dagster_home/dagster.yaml:/opt/dagster/dagster_home/dagster.yaml
       - ./core/dagster_home/workspace.yaml:/opt/dagster/dagster_home/workspace.yaml
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       # - ./core/config:/opt/dagster/app/config
     networks:
       - dagster_network
@@ -78,6 +80,8 @@ services:
       - ./core/storage:/opt/dagster/dagster_home/storage
       - ./core/dagster_home/dagster.yaml:/opt/dagster/dagster_home/dagster.yaml
       - ./core/dagster_home/workspace.yaml:/opt/dagster/dagster_home/workspace.yaml
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       # - ./core/config:/opt/dagster/app/config
     networks:
       - dagster_network

@@ -3,8 +3,16 @@ name: Test Docker Image
 on:
   push:
     branches: [main]
+    paths:
+      - "Dockerfile"
+      - "requirements.txt"
+      - "tests/**"
   pull_request:
     branches: [main]
+    paths:
+      - "Dockerfile"
+      - "requirements.txt"
+      - "tests/**"
 
 jobs:
   test:
@@ -12,16 +20,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install test dependencies
-        run: pip install -r requirements-test.txt
-
       - name: Build test image
         run: docker build -t dagster-core:latest .
 
+      - name: Test base image functionality
+        run: |
+          docker run --rm dagster-core:latest \
+            python -c "import dagster; print(f'Dagster version: {dagster.__version__}')"
+
       - name: Run tests
-        run: pytest tests/
+        run: |
+          docker run --rm \
+            -v $(pwd)/tests:/app/tests \
+            dagster-core:latest \
+            pytest tests/

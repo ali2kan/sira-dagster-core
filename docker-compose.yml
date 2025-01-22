@@ -12,12 +12,12 @@ services:
   #     - dagster_network
 
   webserver_dagster:
-    # image: ghcr.io/ali2kan/sira-dagster-core:multiarch
-    image: ${PIPELINE_IMAGE:-dagster-core}
-    build:
-      context: .
-      dockerfile: Dockerfile
-    platform: linux/amd64
+    image: ghcr.io/ali2kan/sira-dagster-core:latest
+    # image: ${PIPELINE_IMAGE:-dagster-core}
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    # platform: linux/amd64
     # platform: linux/arm64
     restart: always
     entrypoint:
@@ -50,12 +50,12 @@ services:
     #   - postgresql_dagster
 
   daemon_dagster:
-    # image: ghcr.io/ali2kan/sira-dagster-core:multiarch
-    image: ${PIPELINE_IMAGE:-dagster-core}
-    build:
-      context: .
-      dockerfile: Dockerfile
-    platform: linux/amd64
+    image: ghcr.io/ali2kan/sira-dagster-core:latest
+    # image: ${PIPELINE_IMAGE:-dagster-core}
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    # platform: linux/amd64
     # platform: linux/arm64
     entrypoint:
       - dagster-daemon

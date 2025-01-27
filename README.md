@@ -1,9 +1,8 @@
 <div align="center">
 
-A production-ready Docker deployment setup for Dagster Core, providing a robust orchestration environment for data pipelines.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 [![Docker Build](https://github.com/ali2kan/sira-dagster-core/actions/workflows/docker-build.yml/badge.svg)](https://github.com/ali2kan/sira-dagster-core/actions/workflows/docker-build.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 </div>
 

@@ -1,3 +1,5 @@
+# Dagster Core Docker Deployment
+
 <div align="center">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -5,8 +7,6 @@
 [![Docker Build](https://github.com/ali2kan/sira-dagster-core/actions/workflows/docker-build.yml/badge.svg)](https://github.com/ali2kan/sira-dagster-core/actions/workflows/docker-build.yml)
 
 </div>
-
-# Dagster Core Docker Deployment
 
 A production-ready Docker deployment setup for Dagster Core, providing a robust orchestration environment for data pipelines. This repository contains the core infrastructure components needed to run Dagster in a containerized environment.
 

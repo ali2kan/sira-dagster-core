@@ -88,7 +88,41 @@ services:
 
     # volumes:
     #   postgres_data: # Named volume for PostgreSQL data persistence
-
+  dagster_fastapi_client:
+    image: ghcr.io/ali2kan/sira-dagster-fastapi-client:latest
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    container_name: dagster_fastapi_client
+    ports:
+      - "8000:8000"
+    # Command to run the service
+    command:
+      [
+        "uvicorn",
+        "trigger_service.trigger:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+      ]
+    env_file:
+      - .env
+    environment:
+      - DAGSTER_HOST=10.10.10.34
+      - DAGSTER_PORT=3000
+      - DAGSTER_REPOSITORY_LOCATION=dlt_pipelines
+      - DAGSTER_REPOSITORY_NAME=__repository__
+      - API_KEY=${FAST_API_KEY}
+    networks:
+      - dagster_network
+    volumes:
+      - .:/code
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 networks:
   dagster_network:
     external: true

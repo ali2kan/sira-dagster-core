@@ -17,8 +17,6 @@ services:
     # build:
     #   context: .
     #   dockerfile: Dockerfile
-    # platform: linux/amd64
-    # platform: linux/arm64
     restart: always
     entrypoint:
       - dagster-webserver
@@ -45,6 +43,7 @@ services:
       - ./core/storage:/opt/dagster/dagster_home/storage
       - ./core/dagster_home/dagster.yaml:/opt/dagster/dagster_home/dagster.yaml
       - ./core/dagster_home/workspace.yaml:/opt/dagster/dagster_home/workspace.yaml
+      # - ./core/dagster_home/compute-logs:/tmp/dagster-home/storage/compute-logs
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       # - ./core/config:/opt/dagster/app/config
@@ -59,8 +58,6 @@ services:
     # build:
     #   context: .
     #   dockerfile: Dockerfile
-    # platform: linux/amd64
-    # platform: linux/arm64
     entrypoint:
       - dagster-daemon
       - run
@@ -79,6 +76,7 @@ services:
       - ./core/tmp/io_manager_storage:/tmp/io_manager_storage
       - ./core/storage:/opt/dagster/dagster_home/storage
       - ./core/dagster_home/dagster.yaml:/opt/dagster/dagster_home/dagster.yaml
+      # - ./core/dagster_home/compute-logs:/tmp/dagster-home/storage/compute-logs
       - ./core/dagster_home/workspace.yaml:/opt/dagster/dagster_home/workspace.yaml
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -88,8 +86,8 @@ services:
     # depends_on:
     #   - postgresql_dagster
 
-# volumes:
-#   postgres_data: # Named volume for PostgreSQL data persistence
+    # volumes:
+    #   postgres_data: # Named volume for PostgreSQL data persistence
 
 networks:
   dagster_network:

@@ -1,3 +1,12 @@
+local_artifact_storage:
+  module: dagster.core.storage.root
+  class: LocalArtifactStorage
+  config:
+    base_dir: "/tmp/dagster-home/storage"
+
+code_servers:
+  local_startup_timeout: 360
+
 scheduler:
   module: dagster.core.scheduler
   class: DagsterDaemonScheduler
@@ -11,6 +20,10 @@ run_coordinator:
   #     - key: "operation"
   #       value: "example"
   #       limit: 5
+run_retries:
+  enabled: true # Omit this key if using Dagster+, since run retries are enabled by default
+  max_retries: 3
+  retry_on_asset_or_op_failure: false
 
 run_launcher:
   module: dagster.core.launcher
@@ -133,11 +146,30 @@ event_log_storage:
       db_name:
         env: DAGSTER_POSTGRES_DB
       port: 5432
-# compute_logs:
-#   module: dagster_aws.s3.compute_log_manager
-#   class: S3ComputeLogManager
-#   config:
-#     bucket: "etl-dagster-data"
-#     prefix: "compute-logs"
-#     skip_empty_files: true
-#     upload_interval: 30
+
+compute_logs:
+  module: dagster_aws.s3.compute_log_manager
+  class: S3ComputeLogManager
+  config:
+    bucket:
+      env: LOGS__BUCKET_URL
+    region:
+      env: LOGS__REGION
+    endpoint_url:
+      env: LOGS__ENDPOINT_URL
+    use_ssl: true
+    verify: true
+    # prefix: dagster_
+# python_logs:
+#   python_log_level: INFO
+#   dagster_handler_config:
+#     handlers:
+#       console:
+#         class: logging.StreamHandler
+#         level: INFO
+#         stream: ext://sys.stdout
+#         formatter: colored
+#     formatters:
+#       colored:
+#         format: "%(asctime)s [%(levelname)s] %(message)s"
+

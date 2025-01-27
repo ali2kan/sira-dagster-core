@@ -8,40 +8,46 @@ on:
       - "requirements.txt"
       - "tests/**"
       - "core/dagster_home/**"
-      - "docker-compose.yml"
   pull_request:
     branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Build test image
-        run: docker build -t dagster-core:latest .
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: dagster-core:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Test base image functionality
+      - name: Verify Dagster installation
         run: |
-          docker run --rm dagster-core:latest \
-            python -c "import dagster; print(f'Dagster version: {dagster.__version__}')"
+          docker run --rm dagster-core:test python -c "import dagster; print(f'Dagster version: {dagster.__version__}')"
 
-      - name: Install test dependencies and run tests
-        run: |
-          docker run --rm \
-            -v $(pwd)/tests:/app/tests \
-            dagster-core:latest \
-            sh -c "pip install -r tests/requirements-test.txt && python -m pytest tests/"
-
-      - name: Test Dagster configuration
+      - name: Run tests
         run: |
           docker run --rm \
-            -v $(pwd)/core/dagster_home:/opt/dagster/dagster_home \
-            dagster-core:latest \
+            -v ${{ github.workspace }}/tests:/app/tests:ro \
+            dagster-core:test \
+            pytest tests/ -v
+
+      - name: Validate Dagster config
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/core/dagster_home:/opt/dagster/dagster_home:ro \
+            dagster-core:test \
             dagster config validate
-
-      - name: Create test network
-        run: docker network create dagster_network || true
-
-      - name: Test docker-compose configuration
-        run: docker-compose config

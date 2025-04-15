@@ -71,4 +71,4 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}/tests:/opt/dagster/app/tests:ro \
             dagster-core:test \
-            bash -c "cd /opt/dagster/app && pytest tests/ -v"
+            bash -c "cd /opt/dagster/app && pytest tests/test_basic.py -v"

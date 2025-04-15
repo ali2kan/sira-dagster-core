@@ -18,7 +18,7 @@ COPY uv.lock* ./
 ENV UV_SYSTEM_PYTHON=1
 RUN --mount=type=cache,target=/root/.cache/uv \
     if [ "$INSTALL_DEV" = "true" ]; then \
-    uv pip install --system -r pyproject.toml --extras dev; \
+    uv pip install --system -r pyproject.toml --extra dev; \
     else \
     uv pip install --system -r pyproject.toml; \
     fi

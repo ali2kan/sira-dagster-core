@@ -7,23 +7,45 @@ name = "dagster-core"
 version = "1.0.0"
 description = "Production-ready Docker deployment setup for Dagster Core"
 requires-python = ">=3.12"
+license = "MIT"
+authors = [{ name = "Sira Data Team", email = "info@sira.ai" }]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+]
 dependencies = [
-    "dagster>=1.9.8",
-    "dagster-webserver>=0.25.8",
-    "dagster-docker>=0.25.8",
-    "dagster-postgres>=0.25.8",
-    "dagster-aws>=0.25.8",
-    "python-dotenv>=1.0.0",
-    "pydantic>=2.0.0",
+    # Core dependencies with pinned versions for stability
+    "dagster==1.10.10",
+    "dagster-webserver==1.10.10",
+    "dagster-postgres==0.26.10",
+    "dagster-aws==0.26.10",
+    "python-dotenv==1.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    # Testing
+    "pytest==7.4.3",
+    "pytest-cov==4.1.0",
+
+    # Linting and Formatting
+    "black==24.1.1",
+    "ruff==0.3.0",
+    "isort==5.13.0",
 ]
 
 [tool.dagster]
 module_name = "sira_dagster_core"
 
+[tool.hatch.build.targets.wheel]
+packages = ["sira_dagster_core"]
+
 [tool.black]
 line-length = 150
 preview = true
-# target-version = ['py312']
+target-version = ['py312']
+
 [tool.ruff]
 line-length = 150
 target-version = "py312"
@@ -57,4 +79,3 @@ force-multiline = true
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = "-ra -q"
-# asyncio_mode = "auto"

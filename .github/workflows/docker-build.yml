@@ -22,6 +22,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install UV
+        uses: astral-sh/setup-uv@v2
+        with:
+          version: "latest"
+
+      - name: Generate lock file
+        run: |
+          [ ! -f uv.lock ] && uv pip lock --output uv.lock || echo "Lock file already exists"
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 

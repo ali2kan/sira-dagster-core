@@ -12,11 +12,12 @@ services:
   #     - dagster_network
 
   webserver_dagster:
-    image: ghcr.io/ali2kan/sira-dagster-core:latest
-    # image: ${PIPELINE_IMAGE:-dagster-core}
+    # Use image when pulling from registry, build when developing locally
+    image: ${DAGSTER_CURRENT_IMAGE:-ghcr.io/ali2kan/sira-dagster-core:latest}
     # build:
     #   context: .
-    #   dockerfile: Dockerfile
+    #   args:
+    #     INSTALL_DEV: ${INSTALL_DEV:-false}
     restart: always
     entrypoint:
       - dagster-webserver
@@ -25,18 +26,23 @@ services:
       - -p
       - "3000"
       - -w
-      - /opt/dagster/dagster_home/workspace.yaml # Mount workspace.yaml here
+      - /opt/dagster/dagster_home/workspace.yaml
     container_name: webserver_dagster
     ports:
       - 3000:3000
     env_file:
       - .env
     environment:
-      DAGSTER_POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      DAGSTER_POSTGRES_DB: ${POSTGRES_DB:-postgres}
-      DAGSTER_POSTGRES_HOST: ${POSTGRES_HOST:-10.10.10.199}
-      DAGSTER_CURRENT_IMAGE: ${DAGSTER_CURRENT_IMAGE:-ghcr.io/ali2kan/sira-dagster-core:latest}
+      - DAGSTER_HOME=/opt/dagster/dagster_home
+      - DAGSTER_POSTGRES_USER=${DAGSTER_POSTGRES_USER:-postgres}
+      - DAGSTER_POSTGRES_PASSWORD=${DAGSTER_POSTGRES_PASSWORD:-postgres}
+      - DAGSTER_POSTGRES_DB=${DAGSTER_POSTGRES_DB:-dagster}
+      - DAGSTER_POSTGRES_HOST=${POSTGRES_HOST:-10.10.10.199}
+      - DAGSTER_CURRENT_IMAGE=${DAGSTER_CURRENT_IMAGE:-ghcr.io/ali2kan/sira-dagster-core:latest}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - UV_SYSTEM_PYTHON=1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./core/io_manager_storage:/tmp/io_manager_storage
@@ -46,18 +52,17 @@ services:
       # - ./core/dagster_home/compute-logs:/tmp/dagster-home/storage/compute-logs
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-      # - ./core/config:/opt/dagster/app/config
+      - ./sira_dagster_core:/opt/dagster/app/sira_dagster_core
+      - ./.dagster:/opt/dagster/dagster_home
     networks:
       - dagster_network
-    # depends_on:
-    #   - postgresql_dagster
 
   daemon_dagster:
-    image: ghcr.io/ali2kan/sira-dagster-core:latest
-    # image: ${PIPELINE_IMAGE:-dagster-core}
+    image: ${DAGSTER_CURRENT_IMAGE:-ghcr.io/ali2kan/sira-dagster-core:latest}
     # build:
     #   context: .
-    #   dockerfile: Dockerfile
+    #   args:
+    #     INSTALL_DEV: ${INSTALL_DEV:-false}
     entrypoint:
       - dagster-daemon
       - run
@@ -66,21 +71,26 @@ services:
     env_file:
       - .env
     environment:
-      DAGSTER_POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      DAGSTER_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      DAGSTER_POSTGRES_DB: ${POSTGRES_DB:-postgres}
-      DAGSTER_POSTGRES_HOST: ${POSTGRES_HOST:-10.10.10.199}
-      DAGSTER_CURRENT_IMAGE: ${DAGSTER_CURRENT_IMAGE:-ghcr.io/ali2kan/sira-dagster-core:latest}
+      - DAGSTER_HOME=/opt/dagster/dagster_home
+      - DAGSTER_POSTGRES_USER=${DAGSTER_POSTGRES_USER:-postgres}
+      - DAGSTER_POSTGRES_PASSWORD=${DAGSTER_POSTGRES_PASSWORD:-postgres}
+      - DAGSTER_POSTGRES_DB=${DAGSTER_POSTGRES_DB:-dagster}
+      - DAGSTER_POSTGRES_HOST=${POSTGRES_HOST:-10.10.10.199}
+      - DAGSTER_CURRENT_IMAGE=${DAGSTER_CURRENT_IMAGE:-ghcr.io/ali2kan/sira-dagster-core:latest}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - UV_SYSTEM_PYTHON=1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./core/tmp/io_manager_storage:/tmp/io_manager_storage
       - ./core/storage:/opt/dagster/dagster_home/storage
       - ./core/dagster_home/dagster.yaml:/opt/dagster/dagster_home/dagster.yaml
-      # - ./core/dagster_home/compute-logs:/tmp/dagster-home/storage/compute-logs
       - ./core/dagster_home/workspace.yaml:/opt/dagster/dagster_home/workspace.yaml
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-      # - ./core/config:/opt/dagster/app/config
+      - ./sira_dagster_core:/opt/dagster/app/sira_dagster_core
+      - ./.dagster:/opt/dagster/dagster_home
     networks:
       - dagster_network
     # depends_on:
@@ -123,6 +133,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
 networks:
   dagster_network:
     external: true

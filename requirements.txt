@@ -1,13 +1,13 @@
 # Core Dagster dependencies
-dagster>=1.10.0
-dagster-webserver>=1.10.0
-dagster-postgres>=0.26.0
-dagster-aws>=0.26.0
+dagster>=1.10.10
+dagster-webserver>=1.10.10
+dagster-postgres>=0.26.10
+dagster-aws>=0.26.10
 
 # dagster-docker>=0.26.0
 # dagster-k8s>=0.26.0
 
-python-dotenv>=1.0.1
+python-dotenv>=1.1.0
 
 # pydantic>=2.10.6
 # dagster-duckdb>=0.25.8

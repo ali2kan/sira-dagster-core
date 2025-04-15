@@ -5,7 +5,8 @@ on:
     branches: [main]
     paths:
       - "Dockerfile"
-      - "requirements.txt"
+      - "pyproject.toml"
+      - "uv.lock"
       - "tests/**"
       - "core/dagster_home/**"
   pull_request:
@@ -22,6 +23,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install UV
+        uses: astral-sh/setup-uv@v2
+        with:
+          version: "latest"
+
+      - name: Generate lock file
+        run: |
+          [ ! -f uv.lock ] && uv pip lock --output uv.lock || echo "Lock file already exists"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -31,6 +41,8 @@ jobs:
           context: .
           load: true
           tags: dagster-core:test
+          build-args: |
+            INSTALL_DEV=true
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

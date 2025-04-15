@@ -53,7 +53,7 @@ jobs:
       - name: Run tests
         run: |
           docker run --rm \
-            -v ${{ github.workspace }}/tests:/app/tests:ro \
+            -v ${{ github.workspace }}/tests:/opt/dagster/app/tests:ro \
             dagster-core:test \
             pytest tests/ -v
 
